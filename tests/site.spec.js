@@ -3,6 +3,13 @@ import AxeBuilder from '@axe-core/playwright';
 
 const pageUrl = process.env.SITE_URL || new URL('../index.html', import.meta.url).href;
 
+test.beforeEach(async ({ page }) => {
+  await page.goto(pageUrl);
+  await page.getByLabel('Password', { exact: true }).fill('design2code');
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+  await expect(page.locator('#login')).toBeHidden();
+});
+
 test('page, local assets, responsive layout, and navigation', async ({ page }, testInfo) => {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));

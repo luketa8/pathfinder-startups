@@ -1,3 +1,43 @@
+const login = document.querySelector('#login');
+const loginForm = document.querySelector('#login-form');
+const passwordInput = document.querySelector('#password');
+const loginError = document.querySelector('#login-error');
+const siteContent = document.querySelector('#site-content');
+const sessionKey = 'pathfinder-prototype-access';
+
+function unlockSite(moveFocus = false) {
+  login.hidden = true;
+  siteContent.hidden = false;
+  passwordInput.value = '';
+  if (moveFocus) document.querySelector('#main').focus({ preventScroll: true });
+  const destination = document.getElementById(location.hash.slice(1));
+  if (destination) destination.scrollIntoView();
+}
+
+try {
+  if (sessionStorage.getItem(sessionKey) === 'granted') unlockSite();
+} catch {}
+
+loginForm.addEventListener('submit', event => {
+  event.preventDefault();
+  if (passwordInput.value !== 'design2code') {
+    passwordInput.setAttribute('aria-invalid', 'true');
+    loginError.textContent = 'Incorrect password. Try again.';
+    passwordInput.focus();
+    passwordInput.select();
+    return;
+  }
+  try {
+    sessionStorage.setItem(sessionKey, 'granted');
+  } catch {}
+  unlockSite(true);
+});
+
+passwordInput.addEventListener('input', () => {
+  passwordInput.removeAttribute('aria-invalid');
+  loginError.textContent = '';
+});
+
 const menuToggle = document.querySelector('.menu-toggle');
 const navigation = document.querySelector('.site-nav');
 const menuIcon = menuToggle.querySelector('img');

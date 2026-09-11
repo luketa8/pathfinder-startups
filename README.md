@@ -27,6 +27,8 @@ Open [index.html](index.html) in a browser. Fonts and images are local, and the 
 
 ## Behavior
 
+The initial screen has one password field, accepting `design2code`. Access persists in session storage for the current tab; when storage is unavailable, sign-in still works until reload. This is a client-side prototype gate, not authentication: the password check, page source, and assets remain public and can be bypassed. Do not use it to protect confidential material. JavaScript is required to sign in.
+
 Navigation, program comparison, and exploration CTAs link to the corresponding sections. The mobile menu supports Escape and closes when a destination is selected. The closing contact link opens HPE's general contact page; no form or backend submission is implemented.
 
 Both background sections use the supplied [assets/hero-bg.mp4](assets/hero-bg.mp4), muted, looping, and inline. Playback starts when a section enters the viewport and pauses off-screen or when the tab is hidden. Each section has a pause/play control, visually hidden until keyboard-focused. Reduced motion prevents initial video loading and displays the original still; loading failures and blocked autoplay also retain that fallback. The closing video preserves the designed 180-degree rotation.
