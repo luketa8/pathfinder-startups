@@ -78,11 +78,11 @@ document.querySelectorAll('.background-video').forEach(video => {
 
   function showFallback() {
     video.classList.remove('is-ready');
-    toggle.hidden = true;
+    if (toggle) toggle.hidden = true;
   }
 
   function updatePlayback() {
-    toggle.hidden = reducedMotion.matches || !video.classList.contains('is-ready');
+    if (toggle) toggle.hidden = reducedMotion.matches || !video.classList.contains('is-ready');
     if (reducedMotion.matches || !inView || document.hidden || userPaused) {
       video.pause();
       return;
@@ -100,10 +100,10 @@ document.querySelectorAll('.background-video').forEach(video => {
       return;
     }
     video.classList.add('is-ready');
-    toggle.hidden = false;
+    if (toggle) toggle.hidden = false;
   });
   video.addEventListener('error', showFallback);
-  toggle.addEventListener('click', () => {
+  toggle?.addEventListener('click', () => {
     userPaused = !userPaused;
     const action = userPaused ? 'Play' : 'Pause';
     toggle.textContent = `${action} video`;
