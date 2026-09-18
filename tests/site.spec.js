@@ -10,6 +10,35 @@ test.beforeEach(async ({ page }) => {
   await expect(page.locator('#login')).toBeHidden();
 });
 
+test('single-row Pathfinder header and keyboard navigation', async ({ page }) => {
+  await page.evaluate(() => document.fonts.ready);
+  const header = page.locator('.site-header');
+  expect((await header.boundingBox()).height).toBe(80);
+  await expect(header.getByRole('link', { name: 'HPE Pathfinder home' })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  const navigation = page.getByRole('navigation', { name: 'Main navigation', exact: true });
+  if (page.viewportSize().width <= 1100) {
+    const toggle = page.getByRole('button', { name: /navigation$/ });
+    await expect(navigation).toBeHidden();
+    await toggle.focus();
+    await page.keyboard.press('Enter');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await page.keyboard.press('Tab');
+    await expect(navigation.getByRole('link', { name: 'Programs', exact: true })).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(toggle).toBeFocused();
+    await expect(navigation).toBeHidden();
+    await toggle.click();
+  } else {
+    const logo = await header.locator('.brand-logo').boundingBox();
+    expect([logo.width, logo.height]).toEqual([104, 30]);
+    expect(logo.x).toBe(page.viewportSize().width === 1920 ? 160 : 48);
+  }
+  await expect(navigation.getByRole('link', { name: 'Connect with HPE' })).toBeVisible();
+  await navigation.getByRole('link', { name: 'Programs', exact: true }).click();
+  await expect(page).toHaveURL(/#programs$/);
+});
+
 test('page, local assets, responsive layout, and navigation', async ({ page }, testInfo) => {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -28,13 +57,22 @@ test('page, local assets, responsive layout, and navigation', async ({ page }, t
   expect(overflowing).toEqual([]);
   if (testInfo.project.name === 'desktop') {
     const sectionGeometry = await page.evaluate(() => [...document.querySelectorAll('#programs, #find-your-path, .light-section, #companies, #about, #connect')].map(element => [element.getBoundingClientRect().top, element.getBoundingClientRect().height]));
-    expect(sectionGeometry).toEqual([[1661, 1570], [3231, 1382], [4613, 1964], [6577, 900], [7477, 1122], [8599, 960]]);
-    expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBe(9663);
+    expect(sectionGeometry).toEqual([[1424, 1496], [2920, 1382], [4302, 1964], [6266, 900], [7166, 1122], [8288, 960]]);
+    expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBe(9352);
+    const heroContent = await page.locator('.hero-content').boundingBox();
+    expect(heroContent.x).toBe(160);
+    expect(heroContent.y).toBe(361.5);
+    expect(heroContent.width).toBeCloseTo(1034.667, 1);
+    expect(heroContent.height).toBe(410);
     expect(await page.locator('.team-card > img').evaluateAll(images => images.every(image => image.width === 192 && image.height === 192))).toBe(true);
   }
   await page.screenshot({ path: `qa/${testInfo.project.name}.png`, fullPage: true });
+  await page.locator('.hero').getByRole('link', { name: 'Find your path', exact: true }).click();
+  await expect(page).toHaveURL(/#find-your-path$/);
+  await page.locator('.hero').getByRole('link', { name: 'Explore the ecosystem', exact: true }).click();
+  await expect(page).toHaveURL(/#ecosystem$/);
 
-  if (page.viewportSize().width < 701) {
+  if (page.viewportSize().width <= 1100) {
     const toggle = page.getByRole('button', { name: /navigation$/ });
     await toggle.click();
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
@@ -49,6 +87,17 @@ test('page, local assets, responsive layout, and navigation', async ({ page }, t
   }
   await expect(page).toHaveURL(/#programs$/);
   expect(errors).toEqual([]);
+});
+
+test('revised Pathfinder copy and calls to action', async ({ page }) => {
+  await expect(page).toHaveTitle('HPE Pathfinder | Partner, Invest, Build, and Scale');
+  await expect(page.locator('#programs-title')).toHaveText('Find the right path for your next step');
+  await expect(page.locator('#waypoint h3')).toHaveText('Partner');
+  await expect(page.getByRole('link', { name: 'Learn more about partnering with HPE' })).toHaveAttribute('href', '#waypoint-fit');
+  await expect(page.locator('#ecosystem-title')).toHaveText('How Pathfinder works');
+  await expect(page.locator('.role')).toHaveText(['Managing Partner', 'Associate', 'Analyst']);
+  await expect(page.locator('#connect .actions a')).toHaveCount(1);
+  await expect(page.locator('#site-content')).not.toContainText('Waypoint');
 });
 
 test('WCAG accessibility checks', async ({ page }) => {

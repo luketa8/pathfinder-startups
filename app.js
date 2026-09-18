@@ -117,3 +117,25 @@ document.querySelectorAll('.background-video').forEach(video => {
   reducedMotion.addEventListener('change', updatePlayback);
   document.addEventListener('visibilitychange', updatePlayback);
 });
+
+const companyTrack = document.querySelector('#company-track');
+const prevCompanyButton = document.querySelector('.carousel-arrow[data-direction="prev"]');
+const nextCompanyButton = document.querySelector('.carousel-arrow[data-direction="next"]');
+
+if (companyTrack && prevCompanyButton && nextCompanyButton) {
+  function updateCarouselButtons() {
+    const maxScroll = companyTrack.scrollWidth - companyTrack.clientWidth;
+    prevCompanyButton.disabled = companyTrack.scrollLeft <= 0;
+    nextCompanyButton.disabled = companyTrack.scrollLeft >= maxScroll - 1;
+  }
+
+  prevCompanyButton.addEventListener('click', () => {
+    companyTrack.scrollBy({ left: -companyTrack.clientWidth * 0.9, behavior: 'smooth' });
+  });
+  nextCompanyButton.addEventListener('click', () => {
+    companyTrack.scrollBy({ left: companyTrack.clientWidth * 0.9, behavior: 'smooth' });
+  });
+  companyTrack.addEventListener('scroll', updateCarouselButtons);
+  new ResizeObserver(updateCarouselButtons).observe(companyTrack);
+  updateCarouselButtons();
+}
