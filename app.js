@@ -125,15 +125,22 @@ const nextCompanyButton = document.querySelector('.carousel-arrow[data-direction
 if (companyTrack && prevCompanyButton && nextCompanyButton) {
   function updateCarouselButtons() {
     const maxScroll = companyTrack.scrollWidth - companyTrack.clientWidth;
-    prevCompanyButton.disabled = companyTrack.scrollLeft <= 0;
-    nextCompanyButton.disabled = companyTrack.scrollLeft >= maxScroll - 1;
+    const trackStyle = getComputedStyle(companyTrack);
+    const startOffset = parseFloat(trackStyle.paddingLeft);
+    const endOffset = parseFloat(trackStyle.paddingRight);
+    prevCompanyButton.setAttribute('aria-disabled', String(companyTrack.scrollLeft <= startOffset + 1));
+    nextCompanyButton.setAttribute('aria-disabled', String(companyTrack.scrollLeft >= maxScroll - endOffset - 1));
   }
 
   prevCompanyButton.addEventListener('click', () => {
-    companyTrack.scrollBy({ left: -companyTrack.clientWidth * 0.9, behavior: 'smooth' });
+    if (prevCompanyButton.getAttribute('aria-disabled') === 'true') return;
+    companyTrack.scrollBy({ left: -companyTrack.clientWidth * 0.9, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
+    updateCarouselButtons();
   });
   nextCompanyButton.addEventListener('click', () => {
-    companyTrack.scrollBy({ left: companyTrack.clientWidth * 0.9, behavior: 'smooth' });
+    if (nextCompanyButton.getAttribute('aria-disabled') === 'true') return;
+    companyTrack.scrollBy({ left: companyTrack.clientWidth * 0.9, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
+    updateCarouselButtons();
   });
   companyTrack.addEventListener('scroll', updateCarouselButtons);
   new ResizeObserver(updateCarouselButtons).observe(companyTrack);

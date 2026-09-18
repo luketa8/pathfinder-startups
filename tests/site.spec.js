@@ -107,6 +107,66 @@ test('WCAG accessibility checks', async ({ page }) => {
   expect(results.violations).toEqual([]);
 });
 
+test('carousel supports keyboard navigation, boundaries, and reduced motion', async ({ page }) => {
+  const track = page.getByRole('list', { name: 'Portfolio companies' });
+  const previous = page.getByRole('button', { name: 'Scroll to previous companies' });
+  const next = page.getByRole('button', { name: 'Scroll to next companies' });
+  await track.scrollIntoViewIfNeeded();
+  await expect(previous).toHaveAttribute('aria-disabled', 'true');
+  await expect(next).toHaveAttribute('aria-disabled', 'false');
+  await track.focus();
+  await expect(track).toBeFocused();
+  await page.keyboard.press('ArrowRight');
+  await expect.poll(() => track.evaluate(element => element.scrollLeft)).toBeGreaterThan(4);
+  await next.focus();
+  await page.keyboard.press('Enter');
+  await expect(previous).toHaveAttribute('aria-disabled', 'false');
+  await page.evaluate(() => {
+    window.carouselScrollOptions = [];
+    const track = document.querySelector('#company-track');
+    const scrollBy = track.scrollBy.bind(track);
+    track.scrollBy = options => { window.carouselScrollOptions.push(options); scrollBy(options); };
+  });
+  for (let attempt = 0; attempt < 20 && await next.getAttribute('aria-disabled') !== 'true'; attempt++) {
+    const before = await track.evaluate(element => element.scrollLeft);
+    await page.keyboard.press('Enter');
+    await expect.poll(() => track.evaluate(element => element.scrollLeft)).toBeGreaterThan(before);
+  }
+  await expect(next).toHaveAttribute('aria-disabled', 'true');
+  await expect(next).toBeFocused();
+  const end = await track.evaluate(element => element.scrollLeft);
+  await page.keyboard.press('Enter');
+  expect(await track.evaluate(element => element.scrollLeft)).toBe(end);
+  await previous.focus();
+  for (let attempt = 0; attempt < 20 && await previous.getAttribute('aria-disabled') !== 'true'; attempt++) {
+    const before = await track.evaluate(element => element.scrollLeft);
+    await page.keyboard.press('Enter');
+    await expect.poll(() => track.evaluate(element => element.scrollLeft)).toBeLessThan(before);
+  }
+  await expect(previous).toHaveAttribute('aria-disabled', 'true');
+  await expect(previous).toBeFocused();
+  const start = await track.evaluate(element => element.scrollLeft);
+  await page.keyboard.press('Enter');
+  expect(await track.evaluate(element => element.scrollLeft)).toBe(start);
+  expect(await page.evaluate(() => window.carouselScrollOptions.length > 0 && window.carouselScrollOptions.every(options => options.behavior === 'instant'))).toBe(true);
+});
+
+test('mobile navigation remains reachable in a short viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 256 });
+  const toggle = page.getByRole('button', { name: 'Open navigation' });
+  await toggle.focus();
+  await page.keyboard.press('Enter');
+  for (let step = 0; step < 5; step++) await page.keyboard.press('Tab');
+  const contact = page.locator('#site-nav').getByRole('link', { name: 'Connect with HPE' });
+  await expect(contact).toBeFocused();
+  const bounds = await contact.boundingBox();
+  expect(bounds.y).toBeGreaterThanOrEqual(0);
+  expect(bounds.y + bounds.height).toBeLessThanOrEqual(256);
+  await page.keyboard.press('Escape');
+  await expect(toggle).toBeFocused();
+  await expect(page.locator('#site-nav')).toBeHidden();
+});
+
 test('background video plays inline, pauses, and respects reduced motion', async ({ page }, testInfo) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.goto(pageUrl);
@@ -116,7 +176,11 @@ test('background video plays inline, pauses, and respects reduced motion', async
   await expect(heroVideo).toHaveClass(/is-ready/);
   await page.screenshot({ path: `qa/${testInfo.project.name}-video.png` });
   const pauseControl = page.getByRole('button', { name: 'Pause hero background video' });
-  expect(await pauseControl.evaluate(control => getComputedStyle(control).clipPath)).toBe('inset(50%)');
+  expect(await pauseControl.evaluate(control => getComputedStyle(control).clipPath)).toBe('none');
+  await pauseControl.click();
+  expect(await heroVideo.evaluate(video => video.paused)).toBe(true);
+  await page.getByRole('button', { name: 'Play hero background video' }).click();
+  await expect.poll(() => heroVideo.evaluate(video => video.paused)).toBe(false);
   await pauseControl.focus();
   expect(await pauseControl.evaluate(control => getComputedStyle(control).clipPath)).toBe('none');
   await page.keyboard.press('Enter');

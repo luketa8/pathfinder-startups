@@ -173,7 +173,7 @@
       <div class="container">
         <h2 id="companies-title">Meet the innovators working with HPE</h2>
         <div class="company-carousel">
-          <ul class="company-track" id="company-track">
+          <ul class="company-track" id="company-track" tabindex="0" aria-label="Portfolio companies">
             <li class="company-card">
               <div class="company-card-media"><img src="assets/logos/rockset-acquired-by-openai.png" alt="Rockset logo" loading="lazy"></div>
               <p class="company-eyebrow">App-AI/Analytics</p>
@@ -249,8 +249,8 @@
           </ul>
         </div>
         <div class="carousel-controls">
-          <button class="carousel-arrow" type="button" data-direction="prev" aria-label="Scroll to previous companies"><span class="arrow" aria-hidden="true"></span></button>
-          <button class="carousel-arrow" type="button" data-direction="next" aria-label="Scroll to next companies"><span class="arrow" aria-hidden="true"></span></button>
+          <button class="carousel-arrow" type="button" data-direction="prev" aria-label="Scroll to previous companies" aria-controls="company-track" aria-disabled="true"><span class="arrow" aria-hidden="true"></span></button>
+          <button class="carousel-arrow" type="button" data-direction="next" aria-label="Scroll to next companies" aria-controls="company-track" aria-disabled="false"><span class="arrow" aria-hidden="true"></span></button>
         </div>
       </div>
     </section>
