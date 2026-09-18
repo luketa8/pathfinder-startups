@@ -57,13 +57,13 @@ test('page, local assets, responsive layout, and navigation', async ({ page }, t
   expect(overflowing).toEqual([]);
   if (testInfo.project.name === 'desktop') {
     const sectionGeometry = await page.evaluate(() => [...document.querySelectorAll('#programs, #find-your-path, .light-section, #companies, #about, #connect')].map(element => [element.getBoundingClientRect().top, element.getBoundingClientRect().height]));
-    expect(sectionGeometry).toEqual([[1424, 1496], [2920, 1382], [4302, 1964], [6266, 900], [7166, 1122], [8288, 960]]);
-    expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBe(9352);
+    expect(sectionGeometry).toEqual([[1424, 1500], [2924, 1382], [4306, 1964], [6270, 912], [7182, 1122], [8304, 960]]);
+    expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBe(9368);
     const heroContent = await page.locator('.hero-content').boundingBox();
     expect(heroContent.x).toBe(160);
-    expect(heroContent.y).toBe(361.5);
+    expect(heroContent.y).toBe(357.5);
     expect(heroContent.width).toBeCloseTo(1034.667, 1);
-    expect(heroContent.height).toBe(410);
+    expect(heroContent.height).toBe(418);
     expect(await page.locator('.team-card > img').evaluateAll(images => images.every(image => image.width === 192 && image.height === 192))).toBe(true);
   }
   await page.screenshot({ path: `qa/${testInfo.project.name}.png`, fullPage: true });
@@ -93,6 +93,7 @@ test('revised Pathfinder copy and calls to action', async ({ page }) => {
   await expect(page).toHaveTitle('HPE Pathfinder | Partner, Invest, Build, and Scale');
   await expect(page.locator('#programs-title')).toHaveText('Find the right path for your next step');
   await expect(page.locator('#waypoint h3')).toHaveText('Partner');
+  await expect(page.locator('#pathfinder .program-summary > p')).toHaveText('Pathfinder identifies and invests in category-leading startups, in the enterprise technology space.');
   await expect(page.getByRole('link', { name: 'Learn more about partnering with HPE' })).toHaveAttribute('href', '#waypoint-fit');
   await expect(page.locator('#ecosystem-title')).toHaveText('How Pathfinder works');
   await expect(page.locator('.role')).toHaveText(['Managing Partner', 'Associate', 'Analyst']);
@@ -105,6 +106,11 @@ test('WCAG accessibility checks', async ({ page }) => {
   await page.evaluate(() => document.fonts.ready);
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();
   expect(results.violations).toEqual([]);
+  if (page.viewportSize().width <= 1100) {
+    await page.getByRole('button', { name: 'Open navigation' }).click();
+    const expandedResults = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();
+    expect(expandedResults.violations).toEqual([]);
+  }
 });
 
 test('carousel supports keyboard navigation, boundaries, and reduced motion', async ({ page }) => {
