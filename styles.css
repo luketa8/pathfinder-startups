@@ -131,8 +131,18 @@ h1 { color: var(--strong); font-size: 84px; line-height: 90px; font-weight: 300;
 .company-track { list-style: none; padding: 4px 4px 8px; margin: 0; display: flex; gap: 32px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
 .company-track::-webkit-scrollbar { display: none; }
 .company-card { flex: 0 0 260px; scroll-snap-align: start; display: flex; flex-direction: column; gap: 16px; padding: 24px; background: white; text-align: left; }
-.company-card-media { height: 96px; display: flex; align-items: center; justify-content: center; background: #fff; }
-.company-card-media img { max-width: 100%; max-height: 64px; object-fit: contain; }
+.company-card-media { height: 96px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fff; }
+.company-card-media img { width: min(100%, var(--logo-width, 180px)); height: auto; flex-shrink: 0; }
+.company-card-media img[src*="rockset-"] { --logo-width: 190px; transform: translateY(2.7%); }
+.company-card-media img[src*="truera-"] { --logo-width: 150px; }
+.company-card-media img[src*="d2iq-"] { --logo-width: 80px; transform: translate(-1.25%, -1%); }
+.company-card-media img[src*="opsramp-"] { --logo-width: 160px; }
+.company-card-media img[src*="pachyderm-"] { --logo-width: 110px; }
+.company-card-media img[src*="fungible-"] { --logo-width: 190px; }
+.company-card-media img[src*="cellwize-"] { --logo-width: 170px; }
+.company-card-media img[src*="agile-stacks-"] { --logo-width: 100px; }
+.company-card-media img[src*="ionq-"] { --logo-width: 150px; }
+.company-card-media img[src*="stackrox-"] { --logo-width: 100px; }
 .company-eyebrow { font-size: 14px; line-height: 20px; font-weight: 500; text-transform: uppercase; letter-spacing: .04em; color: var(--accent); }
 .company-card h3 { font-size: 24px; line-height: 30px; }
 .company-card p.muted { font-size: 16px; line-height: 24px; }
