@@ -1,43 +1,3 @@
-const login = document.querySelector('#login');
-const loginForm = document.querySelector('#login-form');
-const passwordInput = document.querySelector('#password');
-const loginError = document.querySelector('#login-error');
-const siteContent = document.querySelector('#site-content');
-const sessionKey = 'pathfinder-prototype-access';
-
-function unlockSite(moveFocus = false) {
-  login.hidden = true;
-  siteContent.hidden = false;
-  passwordInput.value = '';
-  if (moveFocus) document.querySelector('#main').focus({ preventScroll: true });
-  const destination = document.getElementById(location.hash.slice(1));
-  if (destination) destination.scrollIntoView();
-}
-
-try {
-  if (sessionStorage.getItem(sessionKey) === 'granted') unlockSite();
-} catch {}
-
-loginForm.addEventListener('submit', event => {
-  event.preventDefault();
-  if (passwordInput.value !== 'design2code') {
-    passwordInput.setAttribute('aria-invalid', 'true');
-    loginError.textContent = 'Incorrect password. Try again.';
-    passwordInput.focus();
-    passwordInput.select();
-    return;
-  }
-  try {
-    sessionStorage.setItem(sessionKey, 'granted');
-  } catch {}
-  unlockSite(true);
-});
-
-passwordInput.addEventListener('input', () => {
-  passwordInput.removeAttribute('aria-invalid');
-  loginError.textContent = '';
-});
-
 const menuToggle = document.querySelector('.menu-toggle');
 const navigation = document.querySelector('.site-nav');
 const menuIcon = menuToggle.querySelector('img');
@@ -71,19 +31,14 @@ document.addEventListener('keydown', (event) => {
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
 document.querySelectorAll('.background-video').forEach(video => {
-  const toggle = video.parentElement.querySelector('.video-toggle');
-  const region = video.parentElement.classList.contains('hero') ? 'hero' : 'closing';
   let inView = false;
-  let userPaused = false;
 
   function showFallback() {
     video.classList.remove('is-ready');
-    if (toggle) toggle.hidden = true;
   }
 
   function updatePlayback() {
-    if (toggle) toggle.hidden = reducedMotion.matches || !video.classList.contains('is-ready');
-    if (reducedMotion.matches || !inView || document.hidden || userPaused) {
+    if (reducedMotion.matches || !inView || document.hidden) {
       video.pause();
       return;
     }
@@ -100,16 +55,8 @@ document.querySelectorAll('.background-video').forEach(video => {
       return;
     }
     video.classList.add('is-ready');
-    if (toggle) toggle.hidden = false;
   });
   video.addEventListener('error', showFallback);
-  toggle?.addEventListener('click', () => {
-    userPaused = !userPaused;
-    const action = userPaused ? 'Play' : 'Pause';
-    toggle.textContent = `${action} video`;
-    toggle.setAttribute('aria-label', `${action} ${region} background video`);
-    updatePlayback();
-  });
   new IntersectionObserver(([entry]) => {
     inView = entry.isIntersecting;
     updatePlayback();

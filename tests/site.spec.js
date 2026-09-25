@@ -5,9 +5,7 @@ const pageUrl = process.env.SITE_URL || new URL('../index.html', import.meta.url
 
 test.beforeEach(async ({ page }) => {
   await page.goto(pageUrl);
-  await page.getByLabel('Password', { exact: true }).fill('design2code');
-  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-  await expect(page.locator('#login')).toBeHidden();
+  await expect(page.locator('#main')).toBeVisible();
 });
 
 test('single-row Pathfinder header and keyboard navigation', async ({ page }) => {
@@ -90,7 +88,7 @@ test('page, local assets, responsive layout, and navigation', async ({ page }, t
 });
 
 test('revised Pathfinder copy and calls to action', async ({ page }) => {
-  await expect(page).toHaveTitle('HPE Pathfinder | Partner, Invest, Build, and Scale');
+  await expect(page).toHaveTitle('HPE Pathfinder | Startup Partnerships & Investment');
   await expect(page.locator('#programs-title')).toHaveText('Find the right path for your next step');
   await expect(page.locator('#waypoint h3')).toHaveText('Partner');
   await expect(page.locator('#pathfinder .program-summary > p')).toHaveText('Pathfinder identifies and invests in category-leading startups, in the enterprise technology space.');
@@ -173,7 +171,7 @@ test('mobile navigation remains reachable in a short viewport', async ({ page })
   await expect(page.locator('#site-nav')).toBeHidden();
 });
 
-test('background video plays inline, pauses, and respects reduced motion', async ({ page }, testInfo) => {
+test('background video plays without controls and respects visibility and reduced motion', async ({ page }, testInfo) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.goto(pageUrl);
   const heroVideo = page.locator('.hero video');
@@ -181,23 +179,12 @@ test('background video plays inline, pauses, and respects reduced motion', async
   expect(await heroVideo.evaluate(video => video.muted && video.loop && video.playsInline && video.videoWidth > 0)).toBe(true);
   await expect(heroVideo).toHaveClass(/is-ready/);
   await page.screenshot({ path: `qa/${testInfo.project.name}-video.png` });
-  const pauseControl = page.getByRole('button', { name: 'Pause hero background video' });
-  expect(await pauseControl.evaluate(control => getComputedStyle(control).clipPath)).toBe('none');
-  await pauseControl.click();
-  expect(await heroVideo.evaluate(video => video.paused)).toBe(true);
-  await page.getByRole('button', { name: 'Play hero background video' }).click();
-  await expect.poll(() => heroVideo.evaluate(video => video.paused)).toBe(false);
-  await pauseControl.focus();
-  expect(await pauseControl.evaluate(control => getComputedStyle(control).clipPath)).toBe('none');
-  await page.keyboard.press('Enter');
-  expect(await heroVideo.evaluate(video => video.paused)).toBe(true);
+  await expect(page.locator('.video-toggle, video[controls]')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /(?:play|pause).*video/i })).toHaveCount(0);
   await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect.poll(() => heroVideo.evaluate(video => video.paused)).toBe(true);
   await expect(heroVideo).not.toBeVisible();
   await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await expect(page.getByRole('button', { name: 'Play hero background video' })).toBeVisible();
-  expect(await heroVideo.evaluate(video => video.paused)).toBe(true);
-  await page.getByRole('button', { name: 'Play hero background video' }).focus();
-  await page.keyboard.press('Enter');
   await expect.poll(() => heroVideo.evaluate(video => video.paused)).toBe(false);
 
   await page.locator('#connect').scrollIntoViewIfNeeded();
