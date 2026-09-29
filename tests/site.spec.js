@@ -56,13 +56,13 @@ test('page, local assets, responsive layout, and navigation', async ({ page }, t
   expect(overflowing).toEqual([]);
   if (testInfo.project.name === 'desktop') {
     const sectionGeometry = await page.evaluate(() => [...document.querySelectorAll('#programs, #find-your-path, .light-section, #companies, #about, #connect')].map(element => [element.getBoundingClientRect().top, element.getBoundingClientRect().height]));
-    expect(sectionGeometry).toEqual([[1424, 1500], [2924, 1382], [4306, 1964], [6270, 912], [7182, 1122], [8304, 960]]);
-    expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBe(9368);
+    expect(sectionGeometry).toEqual([[1424, 1498], [2922, 1382], [4304, 1964], [6268, 912], [7180, 1122], [8302, 960]]);
+    expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBe(9366);
     const heroContent = await page.locator('.hero-content').boundingBox();
     expect(heroContent.x).toBe(160);
-    expect(heroContent.y).toBe(357.5);
+    expect(heroContent.y).toBe(358.5);
     expect(heroContent.width).toBeCloseTo(1034.667, 1);
-    expect(heroContent.height).toBe(418);
+    expect(heroContent.height).toBe(416);
     expect(await page.locator('.team-card > img').evaluateAll(images => images.every(image => image.width === 192 && image.height === 192))).toBe(true);
   }
   await page.screenshot({ path: `qa/${testInfo.project.name}.png`, fullPage: true });

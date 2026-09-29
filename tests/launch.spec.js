@@ -5,9 +5,8 @@ const pageUrl = process.env.SITE_URL || new URL('../index.html', import.meta.url
 test('search and social metadata describe the public page', async ({ page }) => {
   await page.goto(pageUrl);
   const title = 'HPE Pathfinder | Startup Partnerships & Investment';
-  const canonical = 'https://luketa8.github.io/pathfinder-startups/';
   await expect(page).toHaveTitle(title);
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', canonical);
+  await expect(page.locator('link[rel="canonical"], link[rel="sitemap"], meta[property="og:url"]')).toHaveCount(0);
   await expect(page.locator('meta[name="robots"]')).toHaveCount(1);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
   expect(await page.locator('head').innerHTML()).toContain('<!-- <meta name="robots" content="index, follow, max-image-preview:large"> -->');
@@ -18,18 +17,17 @@ test('search and social metadata describe the public page', async ({ page }) => 
   await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute('content', title);
   await expect(page.locator('meta[property="og:description"]')).toHaveAttribute('content', description);
   await expect(page.locator('meta[name="twitter:description"]')).toHaveAttribute('content', description);
-  await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', canonical);
   await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image');
   const imageUrl = await page.locator('meta[property="og:image"]').getAttribute('content');
-  expect(imageUrl.startsWith(canonical)).toBe(true);
+  expect(imageUrl).toBe('assets/hero-background.png');
   await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute('content', imageUrl);
   await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', 'assets/favicon.svg');
-  await expect(page.locator('link[rel="sitemap"]')).toHaveAttribute('href', 'sitemap.xml');
   const structuredData = JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
   expect(structuredData).toMatchObject({
-    '@context': 'https://schema.org', '@type': 'WebPage', name: title, url: canonical,
+    '@context': 'https://schema.org', '@type': 'WebPage', name: title,
     description, inLanguage: 'en-US', publisher: { '@type': 'Organization', name: 'Hewlett Packard Enterprise' }
   });
+  expect(structuredData).not.toHaveProperty('url');
   await page.evaluate(async imagePath => {
     for (const source of [document.querySelector('link[rel="icon"]').href, new URL(imagePath, location.href).href]) {
       const image = new Image();
@@ -37,7 +35,29 @@ test('search and social metadata describe the public page', async ({ page }) => 
       await image.decode();
       if (!image.naturalWidth) throw new Error(`Invalid image: ${source}`);
     }
-  }, imageUrl.slice(canonical.length));
+  }, imageUrl);
+});
+
+test('site resources are directory-relative and external links stay on HPE', async ({ page }) => {
+  const requests = [];
+  page.on('request', request => requests.push(request.url()));
+  await page.goto(pageUrl);
+  await page.evaluate(async () => {
+    document.querySelectorAll('img').forEach(image => { image.loading = 'eager'; });
+    await Promise.all([...document.images].map(image => image.decode()));
+    await document.fonts.ready;
+  });
+  const resources = await page.locator('[src], [data-src], link[href]').evaluateAll(elements =>
+    elements.flatMap(element => ['src', 'data-src', 'href'].filter(attribute => element.hasAttribute(attribute)).map(attribute => element.getAttribute(attribute)))
+  );
+  expect(resources.length).toBeGreaterThan(0);
+  for (const resource of resources) expect(resource).not.toMatch(/^(?:[a-z][a-z\d+.-]*:|\/)/i);
+  const directory = new URL('./', pageUrl).href;
+  expect(requests.filter(url => url !== pageUrl && !url.startsWith(directory))).toEqual([]);
+  const links = await page.locator('a[href]').evaluateAll(elements => elements.map(element => element.getAttribute('href')));
+  for (const link of links) {
+    expect(link.startsWith('#') || link === 'mailto:pathfinder@hpe.com' || link.startsWith('https://www.hpe.com/')).toBe(true);
+  }
 });
 
 test('public page opens directly and preserves section links across reloads', async ({ page }) => {
