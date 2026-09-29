@@ -1,0 +1,16 @@
+{
+  "name": "pathfinder-startups",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Standalone HTML, CSS, and JavaScript implementation of the HPE Startup Ecosystem Figma design.",
+  "type": "module",
+  "scripts": {
+    "test": "node --check app.js && playwright test",
+    "test:ui": "playwright test --ui"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
+    "pngjs": "^7.0.0"
+  }
+}
