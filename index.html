@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Connect your startup with HPE Pathfinder. Explore enterprise partnerships, strategic investment, technical expertise, and opportunities to build and scale.">
-  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="robots" content="noindex">
+  <!-- <meta name="robots" content="index, follow, max-image-preview:large"> -->
   <meta name="theme-color" content="#1d1f27">
   <title>HPE Pathfinder | Startup Partnerships &amp; Investment</title>
   <link rel="canonical" href="https://luketa8.github.io/pathfinder-startups/">
@@ -58,7 +59,7 @@
     <a href="#companies">Companies</a>
     <a href="#about">About</a>
     </div>
-    <a class="button button--secondary" href="#connect">Connect with HPE<span class="arrow" aria-hidden="true"></span></a>
+    <a class="button button--secondary" href="mailto:pathfinder@hpe.com">Connect with HPE<span class="arrow" aria-hidden="true"></span></a>
   </nav>
     </div>
   </header>
@@ -280,17 +281,38 @@
           <article class="team-card">
             <img src="assets/todd-poole.jpg" alt="Todd H. Poole" width="192" height="192" loading="lazy">
             <div class="team-details"><p class="role">Managing Partner</p><h3>Todd H. Poole</h3><p>Former engineer and entrepreneur turned venture investment capitalist with 15+ years of venture experience in traditional and deep technology startups.</p></div>
-            <button class="bio-link" type="button" disabled title="Prototype: full biography URL pending">Read Full Bio<span class="arrow" aria-hidden="true"></span></button>
+            <button class="bio-link" type="button" aria-label="Read Full Bio for Todd H. Poole" aria-haspopup="dialog" aria-controls="bio-modal">Read Full Bio<span class="arrow" aria-hidden="true"></span></button>
+            <template class="team-bio" data-role="Managing Partner">
+              <p>Todd is the Managing Partner of Pathfinder and leads investments in traditional and deep technology. Recent areas of investment interest include hardware, software, edge, core, AI/ML, quantum, computer vision, sensors, silicon, cybersecurity, and sustainability.</p>
+              <p>Before joining Pathfinder, Todd's venture capital career included investment roles at a $50M early-stage venture firm, a $500M mid-stage firm, and several years of activity as a small, private angel in the San Francisco, Seattle, and Chicago startup scenes.</p>
+              <p>Prior to his venture capital career, Todd held several roles as a founder, an early operator, and an early engineer at several startups and early-stage technology companies including a food-delivery startup, a virally successful video game studio, and a logistics startup.</p>
+              <p>Todd started his career working as an automation engineer in a manufacturing environment and a simulation engineer and cryptography technologies expert at a research and development laboratory for a major Department of Defense contractor.</p>
+              <p>Todd spent his academic career at Northwestern University, earning several degrees from McCormick's Electrical Engineering and Computer Science program and Mechanical Engineering program.</p>
+              <p>When he's not investing personally or professionally, Todd enjoys speaking publicly about the venture ecosystem, participating in panel talks, serving as a panel judge for startup competitions, and volunteering at several incubators and accelerators.</p>
+            </template>
           </article>
           <article class="team-card">
             <img src="assets/marcus-vance.jpg" alt="Marcus Vance" width="192" height="192" loading="lazy">
             <div class="team-details"><p class="role">Associate</p><h3>Marcus Vance</h3><p>Experienced enterprise technology consultant with a Fortune 100 background in digital transformation, AI-enabled process automation, and cybersecurity.</p></div>
-            <button class="bio-link" type="button" disabled title="Prototype: full biography URL pending">Read Full Bio<span class="arrow" aria-hidden="true"></span></button>
+            <button class="bio-link" type="button" aria-label="Read Full Bio for Marcus Vance" aria-haspopup="dialog" aria-controls="bio-modal">Read Full Bio<span class="arrow" aria-hidden="true"></span></button>
+            <template class="team-bio" data-role="Pathfinder Associate">
+              <p>Marcus is an Associate at Pathfinder with a Fortune 100 background in digital transformation, AI-enabled process automation, and cybersecurity.</p>
+              <p>He excels at identifying transformative technological shifts and translating complex architectures into valuable partnership opportunities. His skills include technical validation, establishing pilots and PoC trials, and helping bridge the gap between startup innovation and enterprise deployment.</p>
+              <p>Marcus began his career at a Big Four professional services firm where he spent 5 years successfully navigating nearly 150 enterprise technology evaluation cycles on behalf of his Global 2000 clients. He knows how to partner closely with enterprise engineering teams and disruptive startups to de-risk adoption timelines and accelerate time-to-market for emerging hardware and software solutions.</p>
+              <p>Marcus started his career with an undergraduate engineering degree from Carnegie Mellon before earning his Masters in Business Administration from Columbia.</p>
+              <p>Outside the office, Marcus likes to recharge by training for long-distance runs and spending quality time with friends and family.</p>
+            </template>
           </article>
           <article class="team-card">
             <img src="assets/elena-rostova.jpg" alt="Elena Rostova" width="192" height="192" loading="lazy">
             <div class="team-details"><p class="role">Analyst</p><h3>Elena Rostova</h3><p>Partnerships and joint expert dedicated to onboarding startups into Global 2000/C00 networks, co-selling programs, and joint solution marketplaces.</p></div>
-            <button class="bio-link" type="button" disabled title="Prototype: full biography URL pending">Read Full Bio<span class="arrow" aria-hidden="true"></span></button>
+            <button class="bio-link" type="button" aria-label="Read Full Bio for Elena Rostova" aria-haspopup="dialog" aria-controls="bio-modal">Read Full Bio<span class="arrow" aria-hidden="true"></span></button>
+            <template class="team-bio" data-role="Pathfinder Partner">
+              <p>Elena serves as an Analyst at Pathfinder, where her day-to-day work centers on cultivating high-impact partnerships and uncovering new startup opportunities.</p>
+              <p>She has prior professional experience helping startups in the enterprise technology space navigate enterprise co-selling programs and leveraging joint solution development opportunities. In particular, her expertise lies in identifying strategic synergies between parties and ensuring engagements drive mutual growth.</p>
+              <p>Balancing the start of her career with a demanding academic schedule, Elena is currently working to complete dual degrees in economics and international business.</p>
+              <p>When she's not scouring the enterprise technology landscape for The Next Big Thing, Elena enjoys listening to jazz, traveling Europe with her sisters, and spending time with her energetic pet Terrier.</p>
+            </template>
           </article>
         </div>
       </div>
@@ -318,5 +340,16 @@
     </nav>
   </footer>
   </div>
+  <dialog class="bio-modal" id="bio-modal" aria-labelledby="bio-modal-name">
+    <button class="bio-modal-close" type="button" aria-label="Close biography" autofocus><img src="assets/close.svg" alt="" width="24" height="24"></button>
+    <div class="bio-modal-content" tabindex="0" role="region" aria-label="Biography content">
+      <img class="bio-modal-portrait" src="assets/todd-poole.jpg" alt="" width="192" height="192">
+      <div class="bio-modal-details">
+        <p class="bio-modal-role"></p>
+        <h2 id="bio-modal-name"></h2>
+        <div class="bio-modal-text"></div>
+      </div>
+    </div>
+  </dialog>
 </body>
 </html>

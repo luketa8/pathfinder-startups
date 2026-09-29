@@ -8,7 +8,9 @@ test('search and social metadata describe the public page', async ({ page }) => 
   const canonical = 'https://luketa8.github.io/pathfinder-startups/';
   await expect(page).toHaveTitle(title);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', canonical);
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index, follow, max-image-preview:large');
+  await expect(page.locator('meta[name="robots"]')).toHaveCount(1);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
+  expect(await page.locator('head').innerHTML()).toContain('<!-- <meta name="robots" content="index, follow, max-image-preview:large"> -->');
   const description = await page.locator('meta[name="description"]').getAttribute('content');
   expect(description.length).toBeGreaterThan(100);
   expect(description.length).toBeLessThanOrEqual(160);

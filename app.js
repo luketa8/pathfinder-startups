@@ -30,6 +30,63 @@ document.addEventListener('keydown', (event) => {
 
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
+const bioModal = document.querySelector('#bio-modal');
+const bioClose = bioModal.querySelector('.bio-modal-close');
+const bioContent = bioModal.querySelector('.bio-modal-content');
+
+document.querySelectorAll('.bio-link').forEach(button => {
+  button.addEventListener('click', () => {
+    const card = button.closest('.team-card');
+    const portrait = card.querySelector('img');
+    const biography = card.querySelector('.team-bio');
+    bioModal.querySelector('.bio-modal-portrait').src = portrait.src;
+    bioModal.querySelector('.bio-modal-role').textContent = biography.dataset.role;
+    bioModal.querySelector('#bio-modal-name').textContent = card.querySelector('h3').textContent;
+    bioModal.querySelector('.bio-modal-text').replaceChildren(biography.content.cloneNode(true));
+    bioModal.showModal();
+    document.documentElement.classList.add('bio-modal-open');
+    bioContent.scrollTop = 0;
+    bioClose.focus();
+  });
+});
+
+bioClose.addEventListener('click', () => bioModal.close());
+let bioPointerStartedOutside = false;
+
+function isOutsideBioModal(event) {
+  const bounds = bioModal.getBoundingClientRect();
+  return event.target === bioModal && (
+    event.clientX < bounds.left || event.clientX > bounds.right ||
+    event.clientY < bounds.top || event.clientY > bounds.bottom
+  );
+}
+
+bioModal.addEventListener('pointerdown', event => {
+  bioPointerStartedOutside = isOutsideBioModal(event);
+});
+bioModal.addEventListener('click', event => {
+  if (bioPointerStartedOutside && isOutsideBioModal(event)) bioModal.close();
+  bioPointerStartedOutside = false;
+});
+bioModal.addEventListener('close', () => {
+  // A queued close event can arrive after another biography has opened.
+  if (bioModal.open) return;
+  document.documentElement.classList.remove('bio-modal-open');
+});
+bioModal.addEventListener('keydown', event => {
+  if (event.key !== 'Tab') return;
+  const focusable = [...bioModal.querySelectorAll('button, a[href], [tabindex="0"]')];
+  const first = focusable[0];
+  const last = focusable.at(-1);
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+});
+
 document.querySelectorAll('.background-video').forEach(video => {
   let inView = false;
 

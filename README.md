@@ -16,9 +16,9 @@ Open [index.html](index.html) in a browser. Fonts and images are local, and the 
 
 ## Search and Sharing
 
-The page includes a descriptive title, search description, index/follow directive, canonical URL, Open Graph and Twitter metadata, and WebPage JSON-LD. [sitemap.xml](sitemap.xml) lists the public page. The existing hero artwork is used as the social preview image.
+The page includes a descriptive title, search description, active `noindex` directive, canonical URL, Open Graph and Twitter metadata, and WebPage JSON-LD. The original index/follow robots tag is preserved verbatim in an HTML comment. [sitemap.xml](sitemap.xml) lists the public page. The existing hero artwork is used as the social preview image.
 
-All absolute metadata URLs target `https://luketa8.github.io/pathfinder-startups/`. Before moving to another domain or path, update the canonical, Open Graph URL/image, Twitter image, JSON-LD URL, sitemap, and corresponding launch test expectations together. Submit the sitemap in the verified site's search-console account after deployment; metadata alone does not guarantee indexing.
+All absolute metadata URLs target `https://luketa8.github.io/pathfinder-startups/`. Before moving to another domain or path, update the canonical, Open Graph URL/image, Twitter image, JSON-LD URL, sitemap, and corresponding launch test expectations together. Keep `noindex` until indexing is explicitly approved; it does not restrict public access.
 
 There is no project-level robots.txt: crawlers read it at the host root, not under `/pathfinder-startups/`. Any host-level crawl restrictions must be reviewed by the hosting owner.
 
@@ -36,21 +36,22 @@ There is no project-level robots.txt: crawlers read it at the host root, not und
 
 ## Behavior
 
-The page is public immediately, with no password gate or session-storage dependency. Content and in-page links remain available without JavaScript; the mobile menu, carousel buttons, and video playback require JavaScript.
+The page is public immediately, with no password gate or session-storage dependency. Content and in-page links remain available without JavaScript; the mobile menu, biography modals, carousel buttons, and video playback require JavaScript.
 
-Navigation, program comparison, and exploration CTAs link to the corresponding sections. The mobile menu supports Escape and closes when a destination is selected. The closing contact link opens HPE's general contact page; no form or backend submission is implemented.
+Navigation, program comparison, and exploration CTAs link to the corresponding sections. The header's Connect with HPE link opens `mailto:pathfinder@hpe.com`. The mobile menu supports Escape and closes when a destination is selected. The closing contact link opens HPE's general contact page; no form or backend submission is implemented.
 
 Both background sections use the supplied [assets/hero-bg.mp4](assets/hero-bg.mp4), muted, looping, and inline. Playback starts when a section enters the viewport and pauses off-screen or when the tab is hidden. There are no native or custom play/pause controls, as requested. Reduced motion prevents initial video loading and displays the original still; loading failures and blocked autoplay also retain that fallback. The closing video preserves the designed 180-degree rotation.
 
 The company carousel replaces the reference's placeholder grid with twelve supplied logos and acquisition details. Logos have individual optical sizing without modifying the source files. The list is keyboard-focusable; its controls retain focus at either boundary using guarded `aria-disabled` states, and reduced motion disables animated scrolling. The mobile header scrolls internally when the expanded menu is taller than the viewport.
 
+All three Read Full Bio buttons open a native modal styled from [Figma frame 295:2396](https://www.figma.com/design/WcZsgox6JORDtcACH59HVA/Pathfinder-Evolution-Startup-Ecosystem?node-id=295-2396), with Escape, close-button, and outside-click dismissal, keyboard focus containment and restoration, background scroll lock, and scrollable content. Opening and closing use 140ms eased fade/scale transitions, disabled for reduced motion. Clicking content or dragging from inside to outside does not dismiss the modal. Full biographies and modal eyebrows are supplied by the user and stored in each card's `.team-bio` template in `index.html`; the short card summaries remain unchanged. Elena's supplied modal eyebrow is "Pathfinder Partner" while her biography describes her as an Analyst; both are preserved as supplied.
+
 ## Pending Content
 
-- Full-bio buttons are disabled prototype placeholders, as agreed. Supply the three destination URLs before enabling them.
 - Confirm final program, contact, legal, and cookie-preference destinations before production use. General HPE links are provisional, and there is no consent-management integration.
-- Company names, biographies, repeated journey-step copy, and repeated "Why HPE" descriptions are transcribed from Figma, not independently verified.
+- Company names, short team summaries, repeated journey-step copy, and repeated "Why HPE" descriptions are transcribed from Figma, not independently verified.
 - Review WCAG 2.2.2 (Pause, Stop, Hide) before claiming accessibility conformance: looping motion runs longer than five seconds without a page-level pause mechanism. Operating-system reduced-motion support and passing automated axe checks do not establish conformance.
-- Letter spacing is zero to follow the implementation constraints. Figma uses negative tracking on some text, so exact glyph positions and line wrapping can differ. Browser font rasterization also differs from Figma.
+- Letter spacing is zero outside the biography modals, which use the supplied Figma tracking. Exact glyph positions and line wrapping can differ; browser font rasterization also differs from Figma.
 - Publication of this prototype does not grant third parties redistribution rights to HPE fonts, brand assets, or portrait photography.
 
 ## Validation
@@ -84,7 +85,7 @@ Screenshots are generated in `qa/` and excluded from git. The Figma reference sc
 
 - [index.html](index.html): semantic content and destinations.
 - [styles.css](styles.css): design values, local fonts, layout, and responsive rules.
-- [app.js](app.js): mobile navigation and background-video playback.
+- [app.js](app.js): mobile navigation, biography modals, carousel controls, and background-video playback.
 - [tests/site.spec.js](tests/site.spec.js): repeatable browser checks.
 - [tests/launch.spec.js](tests/launch.spec.js): public-access and metadata checks.
 - [sitemap.xml](sitemap.xml): canonical public-page listing for search engines.

@@ -33,6 +33,7 @@ test('single-row Pathfinder header and keyboard navigation', async ({ page }) =>
     expect(logo.x).toBe(page.viewportSize().width === 1920 ? 160 : 48);
   }
   await expect(navigation.getByRole('link', { name: 'Connect with HPE' })).toBeVisible();
+  await expect(navigation.getByRole('link', { name: 'Connect with HPE' })).toHaveAttribute('href', 'mailto:pathfinder@hpe.com');
   await navigation.getByRole('link', { name: 'Programs', exact: true }).click();
   await expect(page).toHaveURL(/#programs$/);
 });
@@ -95,8 +96,130 @@ test('revised Pathfinder copy and calls to action', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Learn more about partnering with HPE' })).toHaveAttribute('href', '#waypoint-fit');
   await expect(page.locator('#ecosystem-title')).toHaveText('How Pathfinder works');
   await expect(page.locator('.role')).toHaveText(['Managing Partner', 'Associate', 'Analyst']);
+  await expect(page.getByRole('button', { name: 'Read Full Bio' })).toHaveCount(3);
   await expect(page.locator('#connect .actions a')).toHaveCount(1);
   await expect(page.locator('#site-content')).not.toContainText('Waypoint');
+});
+
+test('biography modals show each person and contain keyboard focus', async ({ page }) => {
+  for (const { name, role, paragraphs, opening } of [
+    { name: 'Todd H. Poole', role: 'Managing Partner', paragraphs: 6, opening: 'Todd is the Managing Partner of Pathfinder' },
+    { name: 'Marcus Vance', role: 'Pathfinder Associate', paragraphs: 5, opening: 'Marcus is an Associate at Pathfinder' },
+    { name: 'Elena Rostova', role: 'Pathfinder Partner', paragraphs: 4, opening: 'Elena serves as an Analyst at Pathfinder' }
+  ]) {
+    const trigger = page.getByRole('button', { name: `Read Full Bio for ${name}`, exact: true });
+    const card = page.locator('.team-card').filter({ has: trigger });
+    const biography = await card.locator('.team-bio').evaluate(template => [...template.content.querySelectorAll('p')].map(paragraph => paragraph.textContent));
+    const portrait = await card.locator('img').getAttribute('src');
+    await trigger.focus();
+    await page.keyboard.press('Enter');
+    const modal = page.getByRole('dialog', { name, exact: true });
+    await expect(modal).toBeVisible();
+    await expect(modal.locator('.bio-modal-role')).toHaveText(role);
+    await expect(modal.locator('.bio-modal-text > p')).toHaveCount(paragraphs);
+    await expect(modal.locator('.bio-modal-text > p')).toHaveText(biography);
+    await expect(modal.locator('.bio-modal-text > p').first()).toContainText(opening);
+    expect(await modal.locator('.bio-modal-portrait').getAttribute('src')).toContain(portrait);
+    await expect(page.locator('html')).toHaveClass('bio-modal-open');
+    const close = modal.getByRole('button', { name: 'Close biography' });
+    const content = modal.getByRole('region', { name: 'Biography content' });
+    expect(await content.evaluate(element => element.scrollTop)).toBe(0);
+    await expect(close).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(content).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(close).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(content).toBeFocused();
+    const scrollY = await page.evaluate(() => window.scrollY);
+    await page.mouse.wheel(0, 400);
+    expect(await page.evaluate(() => window.scrollY)).toBe(scrollY);
+    await page.keyboard.press('Escape');
+    await expect(modal).toBeHidden();
+    await expect(trigger).toBeFocused();
+    await expect(page.locator('html')).not.toHaveClass('bio-modal-open');
+    await trigger.click();
+    expect(await content.evaluate(element => element.scrollTop)).toBe(0);
+    await close.click();
+    await expect(modal).toBeHidden();
+    await expect(trigger).toBeFocused();
+  }
+});
+
+test('biography modal matches design, stays accessible, and scrolls long content', async ({ page }) => {
+  await page.getByRole('button', { name: 'Read Full Bio for Todd H. Poole', exact: true }).click();
+  const modal = page.getByRole('dialog', { name: 'Todd H. Poole', exact: true });
+  await page.evaluate(() => document.fonts.ready);
+  const bounds = await modal.boundingBox();
+  expect(bounds.width).toBe(Math.min(720, page.viewportSize().width - 32));
+  expect(await modal.evaluate(element => getComputedStyle(element, '::backdrop').backgroundColor)).toBe('rgba(0, 0, 0, 0.8)');
+  await expect(modal).toHaveCSS('border-radius', '24px');
+  await expect(modal.locator('.bio-modal-portrait')).toHaveCSS('width', '192px');
+  await expect(modal.locator('.bio-modal-content')).toHaveCSS('padding-left', page.viewportSize().width > 600 ? '96px' : '24px');
+  const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();
+  expect(results.violations).toEqual([]);
+  await page.setViewportSize({ width: 320, height: 256 });
+  const content = modal.locator('.bio-modal-content');
+  expect(await content.evaluate(element => element.scrollHeight > element.clientHeight)).toBe(true);
+  expect(await content.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+  await content.focus();
+  await page.keyboard.press('End');
+  await expect.poll(() => content.evaluate(element => element.scrollTop)).toBeGreaterThan(0);
+  await content.evaluate(element => { element.scrollTop = element.scrollHeight; });
+  await expect(content.locator('p').last()).toBeInViewport();
+  const close = modal.getByRole('button', { name: 'Close biography' });
+  await expect(close).toBeInViewport();
+  await close.click();
+  await expect(modal).toBeHidden();
+});
+
+test('biography modal dismisses on outside clicks but not content clicks or drags', async ({ page }) => {
+  const trigger = page.getByRole('button', { name: 'Read Full Bio for Todd H. Poole', exact: true });
+  const modal = page.locator('#bio-modal');
+  await trigger.click();
+  await modal.locator('.bio-modal-portrait').click();
+  await expect(modal).toBeVisible();
+  const bounds = await modal.boundingBox();
+  await page.mouse.move(bounds.x + 20, bounds.y + 80);
+  await page.mouse.down();
+  await page.mouse.move(4, 4);
+  await page.mouse.up();
+  await expect(modal).toBeVisible();
+  await page.mouse.click(4, 4);
+  await expect(modal).toBeHidden();
+  await expect(trigger).toBeFocused();
+  await expect(page.locator('html')).not.toHaveClass('bio-modal-open');
+});
+
+test('biography transitions are short, eased, and respect reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  const trigger = page.getByRole('button', { name: 'Read Full Bio for Todd H. Poole', exact: true });
+  const modal = page.locator('#bio-modal');
+  await modal.evaluate(element => {
+    window.bioTransitions = [];
+    element.addEventListener('transitionrun', event => {
+      window.bioTransitions.push({ property: event.propertyName, pseudo: event.pseudoElement, opening: element.open });
+    });
+  });
+  await trigger.click();
+  await expect(modal).toHaveCSS('opacity', '1');
+  await expect(modal).toHaveCSS('transition-duration', '0.14s, 0.14s, 0.14s, 0.14s');
+  await expect(modal).toHaveCSS('transition-timing-function', 'ease-out, ease-out, ease, ease');
+  await page.mouse.click(4, 4);
+  await expect(modal).toBeHidden();
+  const transitions = await page.evaluate(() => window.bioTransitions);
+  for (const opening of [true, false]) {
+    expect(transitions).toContainEqual({ property: 'opacity', pseudo: '', opening });
+    expect(transitions).toContainEqual({ property: 'transform', pseudo: '', opening });
+    expect(transitions).toContainEqual({ property: 'opacity', pseudo: '::backdrop', opening });
+  }
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await trigger.click();
+  await expect(modal).toHaveCSS('transition-duration', '0s');
+  expect(await modal.evaluate(element => getComputedStyle(element, '::backdrop').transitionDuration)).toBe('0s');
+  await page.keyboard.press('Escape');
+  await expect(modal).toBeHidden();
+  await expect(trigger).toBeFocused();
 });
 
 test('WCAG accessibility checks', async ({ page }) => {
