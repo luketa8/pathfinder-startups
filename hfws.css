@@ -1,0 +1,63 @@
+#header #hpehf-header { font-family: "HPE Graphik", sans-serif; background: #1d1f27; border: 0; }
+#header #hpehf-header .hpehf-main-nav { background: #1d1f27; height: 80px; border: 0; }
+#header #hpehf-header .hpehf-main-nav > .hpehf-centered-content { width: min(100% - var(--gutter) * 2, 1600px); max-width: none; margin-inline: auto; padding: 0; height: 80px; }
+#header #hpehf-header #hpehf-hpe-logo { width: 104px; height: 30px; align-self: center; margin: 0; }
+#header #hpehf-header #hpehf-logo-mobile { width: 100%; height: 100%; }
+#header #hpehf-header #hpehf-microsite-title-area { justify-content: center; padding-left: 24px; }
+#header #hpehf-header #hpehf-microsite-title { margin: 0; padding: 0; }
+#header #hpehf-header #hpehf-microsite-title { font-family: inherit; font-size: 26px; line-height: 26px; font-weight: 400; }
+#header #hpehf-header .hpehf-nav-link { font-family: inherit; font-size: 18px; line-height: 18px; font-weight: 400; }
+#header #hpehf-header #hpehf-default-main-nav > li { margin: 0; padding: 0; }
+#header #hpehf-header #hpehf-default-main-nav > li > a { padding: 10px 16px; margin: 0; width: auto; box-sizing: border-box; }
+#header #hpehf-header #hpehf-default-main-nav > li > a:not(.pathfinder-contact)::after { content: none; }
+#header #hpehf-header #hpehf-default-main-nav > li > a:not(.pathfinder-contact):hover { color: #00e0af; }
+#header #hpehf-header #hpehf-default-main-nav > li:last-child { margin-left: 24px; }
+#header #hpehf-header #hpehf-default-main-nav .pathfinder-contact,
+#header #hpehf-header #hpehf-mobile-nav .pathfinder-contact { display: inline-flex; align-items: center; justify-content: center; gap: 12px; width: auto; height: auto; min-height: 54px; padding: 12px 24px; border: 3px solid #00e0af; border-radius: 9999px; background: transparent; color: #fff; font: 500 20px/24px "HPE Graphik", sans-serif; white-space: nowrap; box-sizing: border-box; }
+#header #hpehf-header .pathfinder-contact::after { content: ""; display: block; flex: 0 0 20px; width: 20px; height: 20px; position: static; background: currentColor; mask: var(--pathfinder-cta-arrow) center / 18.678px 15px no-repeat; }
+#header { --pathfinder-cta-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 19 15'%3E%3Cpath d='M1 7.5h16M11 .8l6.7 6.7L11 14.2' fill='none' stroke='black' stroke-width='1.67' stroke-linecap='round'/%3E%3C/svg%3E"); }
+#header #hpehf-header .hpehf-nav-menu { margin-left: auto; }
+#header #hpehf-header a:focus-visible { outline: 3px solid #00e0af; outline-offset: 3px; }
+#header #hpehf-header .pathfinder-contact:hover { border-color: #006750; }
+@media (min-width: 1101px) {
+  #header #hpehf-header .hpehf-nav-menu { display: flex; }
+  #header #hpehf-header .hpehf-icons { display: none; }
+}
+@media (max-width: 1100px) {
+  #header #hpehf-header .hpehf-nav-menu { display: none; }
+  #header #hpehf-header .hpehf-icons { display: flex; margin-left: auto; }
+  #header #hpehf-header #hpehf-hmb-menu { display: flex; align-items: center; border: 0; padding: 0; margin: 0; }
+  #header #hpehf-header #hpehf-hmb-menu > a { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; margin: 0; }
+  #header #hpehf-header #hpehf-hmb-menu::before { content: none; }
+  #header #hpehf-header:has(#hpehf-mobile-nav.hpehf-active) #hpehf-hmb-menu > a { visibility: hidden; }
+  #header #hpehf-header .hpehf-icons { align-items: center; }
+  #header #hpehf-header #hpehf-hmb-icon { color: #fff; height: 14px; width: 18px; }
+  #header #hpehf-header #hpehf-hmb-icon .hpehf-line,
+  #header #hpehf-header #hpehf-hmb-icon .hpehf-line::before,
+  #header #hpehf-header #hpehf-hmb-icon .hpehf-line::after { background: #fff; }
+  /* HFWS uses !important for the 70px mobile offset and full-screen height. */
+  #header #hpehf-header #hpehf-mobile-nav { position: relative; top: 0 !important; height: auto !important; width: 100%; max-height: calc(100svh - 80px); overflow-y: auto; background: #1d1f27; transform: none; }
+  #header #hpehf-header #hpehf-mobile-default-main-nav { width: min(100% - var(--gutter) * 2, 1600px); padding: 0 0 24px; margin-inline: auto; }
+  #header #hpehf-header #hpehf-mobile-default-main-nav > li { margin: 0; padding: 0; border: 0; height: auto; }
+  #header #hpehf-header #hpehf-mobile-default-main-nav > li > a { font: 400 18px/18px "HPE Graphik", sans-serif; min-height: 44px; margin: 0; padding: 12px 0; border: 0; }
+  #header #hpehf-header #hpehf-mobile-nav #hpehf-mobile-default-main-nav > li:last-child { border: 0; padding-top: 24px; }
+  #header #hpehf-header #hpehf-mobile-default-main-nav .hpehf-arrow { display: none; }
+  #header #hpehf-header #hpehf-mobile-nav .pathfinder-contact { flex: 0 0 auto; }
+  #header #hpehf-header .hpehf-search-flyout-area { position: absolute; top: 18px; right: var(--gutter); left: auto; width: 44px; }
+  #header #hpehf-header #hpehf-search-flyout { width: 44px; height: 44px; border: 0; background: #1d1f27; }
+  #header #hpehf-header .hpehf-search-form { width: 44px; height: 44px; margin: 0; padding: 0; }
+  /* Override the service's important Search-button padding for its native menu Close control. */
+  #header #hpehf-header .hpehf-srch-menu-close { position: absolute; inset: 0; display: grid; place-items: center; width: 44px; height: 44px; margin: 0; padding: 0 !important; border: 0; background: #1d1f27; }
+  #header #hpehf-header .hpehf-close-icon { display: block; position: relative; flex: 0 0 24px; width: 24px; height: 24px; margin: auto; }
+  #header #hpehf-header .hpehf-close-icon::before,
+  #header #hpehf-header .hpehf-close-icon::after { content: ""; position: absolute; top: 2px; left: 11px; width: 2px; height: 20px; background: #fff; }
+  #header #hpehf-header .hpehf-close-icon::before { transform: rotate(45deg); }
+  #header #hpehf-header .hpehf-close-icon::after { transform: rotate(-45deg); }
+  #header #hpehf-header #hpehf-flyout-overlay { background: transparent; }
+}
+@media (max-width: 700px) {
+  #header #hpehf-header #hpehf-hpe-logo { width: 78px; height: 22.5px; }
+  #header #hpehf-header #hpehf-microsite-title { font-size: 20px; line-height: 20px; }
+  #header #hpehf-header #hpehf-microsite-title-area { padding-left: 12px; }
+  #header #hpehf-header #hpehf-mobile-nav .pathfinder-contact { font-size: 16px; }
+}

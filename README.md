@@ -1,16 +1,16 @@
 # Pathfinder Startups
 
-Standalone HTML, CSS, and JavaScript reproduction of the HPE Startup Ecosystem design. No application framework, runtime dependency, or build step is required.
+Standalone HTML, CSS, and JavaScript reproduction of the HPE Startup Ecosystem design. No application framework or build step is required. The header uses the hosted HPE Header/Footer Web Service (HFWS) and its jQuery dependency.
 
 ## Preview
 
-Open [index.html](index.html) in a browser. Fonts and images are local, and the page works without a development server.
+Serve the directory with `python3 -m http.server 8000`, then open http://localhost:8000/. Page fonts and images are local; the HFWS header requires network access. Use HTTP rather than opening `index.html` directly: service privacy scripts use protocol-relative URLs that cannot load on `file://`. The original local header is retained as a no-JavaScript/loader-unavailable fallback.
 
 ## Publishing
 
 - Final public URL: https://pathfinder.hpe.com/ (not yet configured in the temporary upload).
 - Repository: https://github.com/luketa8/pathfinder-startups
-- Deploy `index.html`, `styles.css`, `app.js`, and their referenced `assets/` files to any static host. Keep the directory structure intact; use a directory URL ending in `/` or a direct `index.html` URL so relative paths resolve correctly.
+- Deploy `index.html`, `styles.css`, `app.js`, `hfws-config.js`, `hfws.css`, and their referenced `assets/` files to any static host. Keep the directory structure intact; use a directory URL ending in `/` or a direct `index.html` URL so relative paths resolve correctly.
 - The sibling `../pathfinder-upload/` directory is the upload-only snapshot. It excludes source-control files, development dependencies, tests, QA screenshots, documentation, previous exports, and GitHub Pages configuration. The required Lucide asset license is retained.
 - No application build, server-side runtime, or GitHub Pages hosting is required. Recreate the upload snapshot after editing the source.
 - Public sharing of the included prototype content, fonts, images, and video was approved by the project owner for this repository.
@@ -37,13 +37,23 @@ There is no project-level robots.txt: crawlers read it at the host root, not ins
 
 ## Behavior
 
+### HFWS header
+
+`hfws-config.js` runs before the hosted jQuery and production (`latest.r`) HFWS loader. The supported `HPEHF_CFG.mainNav` configuration supplies the Pathfinder title, home anchor, four section links, and mailto CTA. Loader parameters select the dark theme and omit search, cart, sign-in, country selector, and cube menu. These options come from the [advanced HFWS configurator](https://h50007.www5.hpe.com/hfws-test-pages/common-hfws-hpe-com-adv-configurator.php), which also supports `slim_footer=true` and notes that advanced options require HPE approval.
+
+Only the `#header` mount is provided. There is intentionally no `#footer` or `#hpe_slim_footer` mount, so the loader does not insert a service footer. The existing local footer, styling, and destinations remain unchanged; the slim-footer option is not used. `hfws.css` scopes presentation adjustments to the mounted service header, preserving the 80px height, dark colors, responsive spacing, and outlined contact CTA. HFWS renders the actual logo/navigation and owns mobile open/close behavior; the ready handler adds navigation labels, Space-key support, Escape focus restoration, and close-on-destination behavior.
+
+HFWS assets are live, externally maintained dependencies. The `HPEHF.READY` integration and service-rendered DOM should be rechecked when HFWS changes. The service can also load its privacy code on eligible hosted domains; verify any host-level consent integration on deployment. The existing export folders have not been regenerated for this integration.
+
+### Page interactions
+
 The page is public immediately, with no password gate or session-storage dependency. Content and in-page links remain available without JavaScript; the mobile menu, biography modals, carousel buttons, and video playback require JavaScript.
 
 Navigation, program comparison, and exploration CTAs link to the corresponding sections. The header's Connect with HPE link opens `mailto:pathfinder@hpe.com`. The mobile menu supports Escape and closes when a destination is selected. The closing contact link opens HPE's general contact page; no form or backend submission is implemented.
 
 Both background sections use the supplied [assets/hero-bg.mp4](assets/hero-bg.mp4), muted, looping, and inline. Playback starts when a section enters the viewport and pauses off-screen or when the tab is hidden. There are no native or custom play/pause controls, as requested. Reduced motion prevents initial video loading and displays the original still; loading failures and blocked autoplay also retain that fallback. The closing video preserves the designed 180-degree rotation.
 
-The company carousel replaces the reference's placeholder grid with twelve supplied logos and acquisition details. Logos have individual optical sizing without modifying the source files. The list is keyboard-focusable; its controls retain focus at either boundary using guarded `aria-disabled` states, and reduced motion disables animated scrolling. The mobile header scrolls internally when the expanded menu is taller than the viewport.
+The company carousel contains 44 unique companies: the original twelve plus 32 imported from the supplied saved Investments page. Names, industries, logos, and available acquisition notes are preserved from that source; no status is inferred where none is supplied. The saved Cohesity image was blank and is replaced by its [official black-and-green logo](https://www.cohesity.com/content/dam/cohesity/live/cohesity-logo-black-green.svg). Original logos retain their individual optical sizing, while imported logos fit within the media area without cropping or modifying the source files. The list is keyboard-focusable; its controls retain focus at either boundary using guarded `aria-disabled` states, and reduced motion disables animated scrolling. The mobile header scrolls internally when the expanded menu is taller than the viewport.
 
 All three Read Full Bio buttons open a native modal styled from [Figma frame 295:2396](https://www.figma.com/design/WcZsgox6JORDtcACH59HVA/Pathfinder-Evolution-Startup-Ecosystem?node-id=295-2396), with Escape, close-button, and outside-click dismissal, keyboard focus containment and restoration, background scroll lock, and scrollable content. Opening and closing use 140ms eased fade/scale transitions, disabled for reduced motion. Clicking content or dragging from inside to outside does not dismiss the modal. Full biographies and modal eyebrows are supplied by the user and stored in each card's `.team-bio` template in `index.html`; the short card summaries remain unchanged. Elena's supplied modal eyebrow is "Pathfinder Partner" while her biography describes her as an Analyst; both are preserved as supplied.
 
@@ -57,6 +67,8 @@ All three Read Full Bio buttons open a native modal styled from [Figma frame 295
 
 ## Validation
 
+Local tests use Python 3's static HTTP server on port 4173, started and stopped by Playwright. HFWS checks exercise the real hosted service and require network access.
+
 ```sh
 npm ci
 npx playwright install chromium
@@ -68,6 +80,8 @@ To run the same checks against the deployed site:
 ```sh
 SITE_URL=https://pathfinder.hpe.com/ npm test
 ```
+
+If HPE rejects headless browser requests, use `npm test -- --headed --workers=1` to check the real service in a normal Chromium window.
 
 The development-only suite checks Chromium at widths 1920, 1440, 768, 390, and 320: local font/image loading, console errors, horizontal overflow, text overflow, in-page targets, mobile navigation (including a 320 x 256 viewport), carousel keyboard/boundary behavior, and automated WCAG 2/2.1/2.2 A/AA rules supported by axe with the mobile menu closed and open. At 1920px, it also verifies the reference-derived section boundaries with the approved carousel/button adjustments, total page height, and portrait dimensions. These geometry checks are not a zero-difference pixel comparison.
 
@@ -88,6 +102,9 @@ Screenshots are generated in `qa/` and excluded from git. The Figma reference sc
 - [index.html](index.html): semantic content and destinations.
 - [styles.css](styles.css): design values, local fonts, layout, and responsive rules.
 - [app.js](app.js): mobile navigation, biography modals, carousel controls, and background-video playback.
+- [hfws-config.js](hfws-config.js): HFWS custom navigation and accessible mobile integration.
+- [hfws.css](hfws.css): Pathfinder-scoped styling for the real service header.
+- [tests/hfws.spec.js](tests/hfws.spec.js): real service initialization, exact header destinations, unchanged footer, and loader-unavailable fallback.
 - [tests/site.spec.js](tests/site.spec.js): repeatable browser checks.
 - [tests/launch.spec.js](tests/launch.spec.js): public-access and metadata checks.
 

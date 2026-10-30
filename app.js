@@ -1,6 +1,6 @@
 const menuToggle = document.querySelector('.menu-toggle');
 const navigation = document.querySelector('.site-nav');
-const menuIcon = menuToggle.querySelector('img');
+const menuIcon = menuToggle?.querySelector('img');
 
 function closeMenu() {
   menuToggle.setAttribute('aria-expanded', 'false');
@@ -9,7 +9,7 @@ function closeMenu() {
   menuIcon.src = 'assets/menu.svg';
 }
 
-menuToggle.addEventListener('click', () => {
+menuToggle?.addEventListener('click', () => {
   const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
   menuToggle.setAttribute('aria-expanded', String(!isExpanded));
   menuToggle.setAttribute('aria-label', isExpanded ? 'Open navigation' : 'Close navigation');
@@ -17,12 +17,12 @@ menuToggle.addEventListener('click', () => {
   menuIcon.src = isExpanded ? 'assets/menu.svg' : 'assets/close.svg';
 });
 
-navigation.addEventListener('click', (event) => {
+navigation?.addEventListener('click', (event) => {
   if (event.target.closest('a')) closeMenu();
 });
 
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && navigation.classList.contains('is-open')) {
+  if (event.key === 'Escape' && navigation?.classList.contains('is-open')) {
     closeMenu();
     menuToggle.focus();
   }

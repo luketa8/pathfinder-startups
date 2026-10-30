@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const pageUrl = process.env.SITE_URL || new URL('../index.html', import.meta.url).href;
+const pageUrl = process.env.SITE_URL || 'http://127.0.0.1:4173/';
 
 test('search and social metadata describe the public page', async ({ page }) => {
   await page.goto(pageUrl);
@@ -38,23 +38,26 @@ test('search and social metadata describe the public page', async ({ page }) => 
   }, imageUrl);
 });
 
-test('site resources are directory-relative and external links stay on HPE', async ({ page }) => {
+test('site-owned resources are directory-relative and external links stay on HPE', async ({ page }) => {
   const requests = [];
   page.on('request', request => requests.push(request.url()));
   await page.goto(pageUrl);
+  await page.waitForFunction(() => window.HPEHF?.hfInitialized);
   await page.evaluate(async () => {
     document.querySelectorAll('img').forEach(image => { image.loading = 'eager'; });
     await Promise.all([...document.images].map(image => image.decode()));
     await document.fonts.ready;
   });
-  const resources = await page.locator('[src], [data-src], link[href]').evaluateAll(elements =>
+  const resources = await page.locator('#main [src], #main [data-src], #bio-modal [src], link[rel="icon"], script[src="app.js"], script[src="hfws-config.js"], link[href="styles.css"], link[href="hfws.css"]').evaluateAll(elements =>
     elements.flatMap(element => ['src', 'data-src', 'href'].filter(attribute => element.hasAttribute(attribute)).map(attribute => element.getAttribute(attribute)))
   );
   expect(resources.length).toBeGreaterThan(0);
   for (const resource of resources) expect(resource).not.toMatch(/^(?:[a-z][a-z\d+.-]*:|\/)/i);
   const directory = new URL('./', pageUrl).href;
-  expect(requests.filter(url => url !== pageUrl && !url.startsWith(directory))).toEqual([]);
-  const links = await page.locator('a[href]').evaluateAll(elements => elements.map(element => element.getAttribute('href')));
+  for (const resource of resources) {
+    if (!resource.endsWith('.mp4') && resource !== 'assets/favicon.svg') expect(requests).toContain(new URL(resource, directory).href);
+  }
+  const links = await page.locator('#main a[href], .site-footer a[href]').evaluateAll(elements => elements.map(element => element.getAttribute('href')));
   for (const link of links) {
     expect(link.startsWith('#') || link === 'mailto:pathfinder@hpe.com' || link.startsWith('https://www.hpe.com/')).toBe(true);
   }

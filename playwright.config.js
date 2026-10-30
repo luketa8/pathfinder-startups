@@ -4,6 +4,11 @@ export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
   reporter: 'list',
+  webServer: process.env.SITE_URL ? undefined : {
+    command: 'python3 -m http.server 4173 --bind 127.0.0.1',
+    url: 'http://127.0.0.1:4173/',
+    reuseExistingServer: false
+  },
   use: { browserName: 'chromium', headless: true, reducedMotion: 'reduce' },
   projects: [
     { name: 'desktop', use: { viewport: { width: 1920, height: 1080 } } },

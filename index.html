@@ -36,12 +36,16 @@
     }
   </script>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="hfws.css">
+  <script src="hfws-config.js"></script>
+  <script defer src="https://h50007.www5.hpe.com/hfws-static/js/framework/jquery/v-3-6-0/jquery.js" onerror="console.error('HFWS jQuery failed to load; Pathfinder navigation remains available.')"></script>
+  <script defer src="https://h50007.www5.hpe.com/hfws/us/en/hpe/latest.r/root?contentType=js&amp;hide_country_selector=true&amp;color_scheme=dark&amp;hide_search=true&amp;hide_cart=true&amp;hide_sign_in=true&amp;hide_cube_menu=true" onerror="console.error('HFWS failed to load; Pathfinder navigation remains available.')"></script>
   <script src="app.js" defer></script>
 </head>
 <body>
   <div id="site-content">
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="site-header">
+  <header class="site-header" id="header">
     <div class="container header-content">
     <a class="brand" href="#top" aria-label="HPE Pathfinder home">
       <img class="brand-logo" src="assets/hpe-logo.svg" width="104" height="30" alt="HPE">
@@ -261,6 +265,173 @@
               <h3>StackRox</h3>
               <p class="muted">Acquired by Red Hat</p>
             </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/alation.png" alt="Alation logo" loading="lazy"></div>
+              <p class="company-eyebrow">Data Mgmt</p>
+              <h3>Alation</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/aleph-alpha.png" alt="Aleph Alpha logo" loading="lazy"></div>
+              <p class="company-eyebrow">App-AI/Analytics</p>
+              <h3>Aleph Alpha</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/ayar-labs.png" alt="Ayar Labs logo" loading="lazy"></div>
+              <p class="company-eyebrow">Systems</p>
+              <h3>Ayar Labs</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/bigid.png" alt="BigID logo" loading="lazy"></div>
+              <p class="company-eyebrow">Data Mgmt</p>
+              <h3>BigID</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/cequence-security.png" alt="Cequence Security logo" loading="lazy"></div>
+              <p class="company-eyebrow">Security</p>
+              <h3>Cequence Security</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/classiq.png" alt="Classiq logo" loading="lazy"></div>
+              <p class="company-eyebrow">Systems</p>
+              <h3>Classiq</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/cohesity.svg" alt="Cohesity logo" loading="lazy"></div>
+              <p class="company-eyebrow">Data Mgmt</p>
+              <h3>Cohesity</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/datarobot.png" alt="DataRobot logo" loading="lazy"></div>
+              <p class="company-eyebrow">App-AI/Analytics</p>
+              <h3>DataRobot</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/dragos.png" alt="Dragos logo" loading="lazy"></div>
+              <p class="company-eyebrow">Security</p>
+              <h3>Dragos</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/flywheel.png" alt="Flywheel logo" loading="lazy"></div>
+              <p class="company-eyebrow">App-AI/Analytics</p>
+              <h3>Flywheel</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/greenly.png" alt="Greenly logo" loading="lazy"></div>
+              <p class="company-eyebrow">PaaS &amp; Fleet Mgmt</p>
+              <h3>Greenly</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/kadence.png" alt="Kadence logo" loading="lazy"></div>
+              <p class="company-eyebrow">Edge</p>
+              <h3>Kadence</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/lightmatter.png" alt="Lightmatter logo" loading="lazy"></div>
+              <p class="company-eyebrow">Systems</p>
+              <h3>Lightmatter</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/mythic.png" alt="Mythic logo" loading="lazy"></div>
+              <p class="company-eyebrow">Systems</p>
+              <h3>Mythic</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/platform-9.png" alt="Platform 9 logo" loading="lazy"></div>
+              <p class="company-eyebrow">PaaS &amp; Fleet Mgmt</p>
+              <h3>Platform 9</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/pubnub.png" alt="PubNub logo" loading="lazy"></div>
+              <p class="company-eyebrow">Edge</p>
+              <h3>PubNub</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/safebreach.png" alt="SafeBreach logo" loading="lazy"></div>
+              <p class="company-eyebrow">Security</p>
+              <h3>SafeBreach</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/scality.png" alt="Scality logo" loading="lazy"></div>
+              <p class="company-eyebrow">Data Mgmt</p>
+              <h3>Scality</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/singlestore.png" alt="SingleStore logo" loading="lazy"></div>
+              <p class="company-eyebrow">Data Mgmt</p>
+              <h3>SingleStore</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/synack.png" alt="Synack logo" loading="lazy"></div>
+              <p class="company-eyebrow">Security</p>
+              <h3>Synack</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/tamr.png" alt="Tamr logo" loading="lazy"></div>
+              <p class="company-eyebrow">App-AI/Analytics</p>
+              <h3>Tamr</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/thoughtspot.png" alt="ThoughtSpot logo" loading="lazy"></div>
+              <p class="company-eyebrow">App-AI/Analytics</p>
+              <h3>ThoughtSpot</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/unqork.png" alt="Unqork logo" loading="lazy"></div>
+              <p class="company-eyebrow">App-Dev/Ops</p>
+              <h3>Unqork</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/vfunction.png" alt="vFunction logo" loading="lazy"></div>
+              <p class="company-eyebrow">App-Dev/Ops</p>
+              <h3>vFunction</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/weka.png" alt="WEKA logo" loading="lazy"></div>
+              <p class="company-eyebrow">Data Mgmt</p>
+              <h3>WEKA</h3>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/portworx.png" alt="Portworx logo" loading="lazy"></div>
+              <p class="company-eyebrow">App-AI/Analytics</p>
+              <h3>Portworx</h3>
+              <p class="muted">Acquired by Pure Storage</p>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/chef.png" alt="Chef logo" loading="lazy"></div>
+              <p class="company-eyebrow">App-Dev/Ops</p>
+              <h3>Chef</h3>
+              <p class="muted">Acquired by Progress</p>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/shape-security.png" alt="Shape Security logo" loading="lazy"></div>
+              <p class="company-eyebrow">Security</p>
+              <h3>Shape Security</h3>
+              <p class="muted">Acquired by F5</p>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/hedvig.png" alt="Hedvig logo" loading="lazy"></div>
+              <p class="company-eyebrow">Data Mgmt</p>
+              <h3>Hedvig</h3>
+              <p class="muted">Acquired by Commvault</p>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/barefoot-networks.png" alt="Barefoot Networks logo" loading="lazy"></div>
+              <p class="company-eyebrow">Systems</p>
+              <h3>Barefoot Networks</h3>
+              <p class="muted">Acquired by Intel</p>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/hexadite.png" alt="Hexadite logo" loading="lazy"></div>
+              <p class="company-eyebrow">Security</p>
+              <h3>Hexadite</h3>
+              <p class="muted">Acquired by Microsoft</p>
+            </li>
+            <li class="company-card">
+              <div class="company-card-media"><img class="company-logo-contained" src="assets/logos/adallom.png" alt="Adallom logo" loading="lazy"></div>
+              <p class="company-eyebrow">Security</p>
+              <h3>Adallom</h3>
+              <p class="muted">Acquired by Microsoft</p>
+            </li>
           </ul>
         </div>
         <div class="carousel-controls">
@@ -287,6 +458,7 @@
               <p>When he's not investing personally or professionally, Todd enjoys speaking publicly about the venture ecosystem, participating in panel talks, serving as a panel judge for startup competitions, and volunteering at several incubators and accelerators.</p>
             </template>
           </article>
+          <!--
           <article class="team-card">
             <img src="assets/marcus-vance.jpg" alt="Marcus Vance" width="192" height="192" loading="lazy">
             <div class="team-details"><p class="role">Associate</p><h3>Marcus Vance</h3><p>Experienced enterprise technology consultant with a Fortune 100 background in digital transformation, AI-enabled process automation, and cybersecurity.</p></div>
@@ -310,6 +482,7 @@
               <p>When she's not scouring the enterprise technology landscape for The Next Big Thing, Elena enjoys listening to jazz, traveling Europe with her sisters, and spending time with her energetic pet Terrier.</p>
             </template>
           </article>
+          -->
         </div>
       </div>
     </section>

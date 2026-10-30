@@ -119,6 +119,7 @@ h1 { color: var(--strong); font-size: 84px; line-height: 90px; font-weight: 300;
 .company-card { flex: 0 0 260px; scroll-snap-align: start; display: flex; flex-direction: column; gap: 16px; padding: 24px; background: white; text-align: left; }
 .company-card-media { height: 96px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fff; }
 .company-card-media img { width: min(100%, var(--logo-width, 180px)); height: auto; flex-shrink: 0; }
+.company-card-media img.company-logo-contained { max-height: 100%; object-fit: contain; }
 .company-card-media img[src*="rockset-"] { --logo-width: 190px; transform: translateY(2.7%); }
 .company-card-media img[src*="truera-"] { --logo-width: 150px; }
 .company-card-media img[src*="d2iq-"] { --logo-width: 80px; transform: translate(-1.25%, -1%); }
@@ -140,6 +141,9 @@ h1 { color: var(--strong); font-size: 84px; line-height: 90px; font-weight: 300;
 .team { padding-block: 96px; }
 .team-intro { max-width: 1040px; }
 .team-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px; }
+@media (min-width: 1101px) {
+  .team-grid > .team-card:only-child { grid-column: 2; }
+}
 .team-card { background: #292d3a; padding: 48px; display: flex; flex-direction: column; align-items: center; gap: 36px; text-align: center; }
 .team-card > img { width: 192px; height: 192px; border-radius: 50%; object-fit: cover; }
 .team-details { display: flex; flex-direction: column; gap: 16px; }
