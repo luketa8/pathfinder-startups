@@ -7,6 +7,7 @@ const pageUrl = process.env.SITE_URL || 'http://127.0.0.1:4173/';
 test.beforeEach(async ({ page }) => {
   await page.goto(pageUrl);
   await page.waitForFunction(() => window.HPEHF?.hfInitialized);
+  await expect(page.locator('#hpehf-default-main-nav > li')).toHaveCount(4);
   await expect(page.locator('#main')).toBeVisible();
 });
 
@@ -35,8 +36,8 @@ test('single-row Pathfinder header and keyboard navigation', async ({ page }) =>
     expect([logo.width, logo.height]).toEqual([104, 30]);
     expect(logo.x).toBe(page.viewportSize().width === 1920 ? 160 : 48);
   }
-  await expect(navigation.getByRole('link', { name: 'Connect with HPE' })).toBeVisible();
-  await expect(navigation.getByRole('link', { name: 'Connect with HPE' })).toHaveAttribute('href', 'mailto:pathfinder@hpe.com');
+  await expect(header.getByRole('link', { name: 'Connect with HPE' })).toBeVisible();
+  await expect(header.getByRole('link', { name: 'Connect with HPE' })).toHaveAttribute('href', 'mailto:pathfinder@hpe.com');
   await navigation.getByRole('link', { name: 'Programs', exact: true }).click();
   await expect(page).toHaveURL(/#programs$/);
 });
@@ -311,6 +312,9 @@ test('carousel supports keyboard navigation, boundaries, and reduced motion', as
 
 test('mobile navigation remains reachable in a short viewport', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 256 });
+  await page.reload();
+  await page.waitForFunction(() => window.HPEHF?.hfInitialized);
+  await expect(page.locator('#hpehf-mobile-default-main-nav a')).toHaveText(['Programs', 'Why HPE', 'Companies', 'About']);
   const toggle = page.getByRole('button', { name: 'Open navigation' });
   await toggle.focus();
   await page.keyboard.press('Enter');

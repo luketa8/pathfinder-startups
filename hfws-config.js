@@ -2,15 +2,15 @@ window.HPEHF_CFG = {
   mainNav: {
     micrositeLogoArea: {
       micrositeTitle: 'Pathfinder',
-      logo: { type: 'hpe', href: '#top', ariaLabel: 'HPE Pathfinder home' }
+      logo: { type: 'hpe', href: '#top', title: 'Pathfinder', ariaLabel: 'HPE Pathfinder home', dataAnalyticsRegionId: 'gmenu|Pathfinder' }
     },
     navLinks: [
-      { title: 'Programs', href: '#programs' },
-      { title: 'Why HPE', href: '#why-hpe' },
-      { title: 'Companies', href: '#companies' },
-      { title: 'About', href: '#about' },
-      { title: 'Connect with HPE', href: 'mailto:pathfinder@hpe.com', linkClassName: 'pathfinder-contact' }
-    ]
+      { title: 'Programs', href: '#programs', newWindow: false, dataAnalyticsRegionId: 'gmenu|Pathfinder|Programs' },
+      { title: 'Why HPE', href: '#why-hpe', newWindow: false, dataAnalyticsRegionId: 'gmenu|Pathfinder|Why HPE' },
+      { title: 'Companies', href: '#companies', newWindow: false, dataAnalyticsRegionId: 'gmenu|Pathfinder|Companies' },
+      { title: 'About', href: '#about', newWindow: false, dataAnalyticsRegionId: 'gmenu|Pathfinder|About' }
+    ],
+    CTA: { title: 'Connect with HPE', href: 'mailto:pathfinder@hpe.com', newWindow: false, dataAnalyticsRegionId: 'gmenu|Pathfinder|Connect with HPE' }
   }
 };
 
